@@ -11,7 +11,7 @@ class unionFind{
         float coste;
     public:
 
-    int getSize(){
+    int getSize() const{
         return size;
     }
 
@@ -21,7 +21,7 @@ class unionFind{
         }
     }
 
-    const int & getPadre(int n){
+    const int & getPadre(int n) const{
         if(n < this->getSize() && n >= 0){
             return padre[n];
         }
