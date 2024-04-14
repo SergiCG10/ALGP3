@@ -8,9 +8,13 @@ class unionFind{
     private:
         int* padre;
         int size;
-        float coste;
     public:
 
+    UnionFind(){
+        padre = 0;
+        size = 0;
+    }
+    
     int getSize() const{
         return size;
     }
@@ -50,11 +54,13 @@ class unionFind{
         }else{
             padre[ findSet(y) ] = x;
         }
+    }
+
+    ~UnionFind(){
+        delete [] padre;
+        size = 0;
     }   
 };
-
-
-
 
 void Kruskal( int* V, int* A ){
     float precioTotal = 0; //Precio de asfaltar el conjunto de 
