@@ -1,131 +1,133 @@
-#include <iostream>
-#include <queue>
+/*
+EJEMPLO DE INPUT
+5 9
+1 2 7
+1 4 2
+2 3 1
+2 4 2
+3 5 4
+4 2 3
+4 3 8
+4 5 5
+5 3 5
+
+1
+
+Los dos primeros números son el número de vértices y de aristas
+La primera y segunda columna son los sensores que se unen, la tercera columna es la distancia entre ellos
+El número final es el sensor del cual quieres conocer los datos, y luego pedirá cual de todos los vértices es el servidor final.
+EJEMPLO DE INPUT DE LAS DIAPOSITIVAS:
+6 11
+1 2 3
+1 3 5
+1 4 9
+2 4 4
+2 3 3
+2 5 7
+3 4 2
+3 5 6
+3 6 8
+4 6 2
+5 6 5
+
+1
+
+6
+*/
+#include <stdio.h>
 #include <vector>
-#define MAXV 100 // Maxima cantidad de vertices.
-#define oo 0x3f3f3f3f // Nuestro valor infinito.
+#include <queue>
+#include <iostream>
 using namespace std;
+#define MAX 10005 //maximo numero de vértices
+#define Node pair< int , int > //definimos el nodo como un par( first , second ) donde first es el vertice adyacente y second el peso de la arista
+#define INF 1<<30 //definimos un valor grande que represente la distancia infinita inicial, basta conque sea superior al maximo valor del peso en alguna de las aristas
 
-
-struct Edge
-{
-	int node; // El nodo destino de la arista.
-	int cost; // El costo de la arista.
-	Edge(int _node, int _cost) : node(_node), cost(_cost) {} // Constructor parametrizado.
-	Edge() : node(-1), cost(-1) {} // Constructor por defecto.
+//La cola de prioridad de C++ por default es un max-Heap (elemento de mayor valor en el tope)
+//por ello es necesario realizar nuestro comparador para que sea un min-Heap
+struct cmp {
+    bool operator() ( const Node &a , const Node &b ) {
+        return a.second > b.second;
+    }
 };
+vector< Node > ady[ MAX ]; //lista de adyacencia
+int distancia[ MAX ];      //distancia[ u ] distancia de vértice inicial a vértice con ID = u
+bool visitado[ MAX ];      //para vértices visitados
+priority_queue< Node , vector<Node> , cmp > Q; //priority queue propia del c++, usamos el comparador definido para que el de menor valor este en el tope
+int V;                     //numero de vertices
+int previo[ MAX ];         //para la impresion de caminos
 
-struct Graph
-{
-	vector<Edge> G[MAXV]; // Lista de adyacencias.
-	int V; // Cantidad de vertices.
-	int E; // Cantidad de aristas.
-};
-
-struct State
-{
-	int node; // El nodo actual.
-	int cost; // El costo del camino.
-	State(int _node, int _cost) : node(_node), cost(_cost) {} // Constructor parametrizado.
-	bool operator <(const State &b) const // Sobrecarga del operador de prioridad <.
-	{
-		return cost > b.cost;
-	}
-};
-
-int algoritmo(const int begin, const int end, const Graph graph)
-{
-	priority_queue<State> pq; // La cola de prioridad.
-	vector<int> Dist(graph.V, oo); // La distancia hacia todos los vertices. Inicialmente para cada vertice su valor es infinito.
-	vector<bool> mark(graph.V, false); // Este arreglo nos permitira determinar los nodos procesados.
-
-	Dist[begin] = 0; // Valor inicial del vertice de partida.
-	pq.push(State(begin, 0)); // Agregamos el primer elemento, que no es mas que el vertice de partida.
-	while(!pq.empty()) // Mientras existan vertices por procesar.
-	{
-		State st = pq.top(); pq.pop(); // Se desencola el elemento minimo.
-		mark[st.node] = true; // Se marca el nodo como visitado.
-		if (st.node == end)
-			return st.cost; // Retornamos el valor del camino, hemos llegado al vertice destino.
-
-		int T = (int)graph.G[st.node].size();
-		for(int i = 0; i < T; ++i) // Se recorren las adyacencias de "a".
-		{
-			// Si no ha sido procesado el vertice "vi" y la distancia hacia "vi" es menor a la distancia
-			// en Dist entonces hemos encontrado un camino mas corto a "vi".
-			if (!mark[graph.G[st.node][i].node] && ((Dist[st.node] + graph.G[st.node][i].cost) < Dist[graph.G[st.node][i].node]))
-			{
-				Dist[graph.G[st.node][i].node] = st.cost + graph.G[st.node][i].cost;
-				pq.push(State(graph.G[st.node][i].node, st.cost + graph.G[st.node][i].cost));
-			}
-		}
-	}
-	return -1; // Si no se puede llegar al destino, retornar -1.
+//función de inicialización
+void init(){
+    for( int i = 0 ; i <= V ; ++i ){
+        distancia[ i ] = INF;  //inicializamos todas las distancias con valor infinito
+        visitado[ i ] = false; //inicializamos todos los vértices como no visitados
+        previo[ i ] = -1;      //inicializamos el previo del vertice i con -1
+    }
 }
 
-struct Programa
-{
-	int V, E;
-	int comienzo, fin;
-	void definirGrafo(Graph& graph)
-	{
-		cout << "Ingrese Cantidad de Vertices: " << endl;
-		cin >> V;
-		cout << "Ingrese Cantidad de Aristas: " << endl;
-		cin >> E;
-
-		graph.V = V;
-		graph.E = E;
-	}
-	void cargarGrafo(Graph & graph)
-	{
-		for (int i = 0; i < E; ++i)
-		{
-			int Origen, Destino, Peso;
-			cout << "Ingrese Origen: " << endl;
-			cin >> Origen;
-			cout << "Ingrese Destino: " << endl;
-			cin >> Destino;
-			cout << "Ingrese Peso de la Arista: " << endl;
-			cin >> Peso;
-
-			// Insertamos la arista dos veces, ya que nuestro grafo es un grafo no dirigido.
-			graph.G[Origen].push_back(Edge(Destino, Peso));
-			graph.G[Destino].push_back(Edge(Origen, Peso));
-		}
-	}
-	void Dijkstra(Graph graph)
-	{
-		cout << "Ingrese Vertice Inicial: " << endl;
-		cin >> comienzo;
-		cout << "Ingrese Vertice Final: " << endl;
-		cin >> fin;
-		int n = algoritmo(comienzo, fin, graph);
-		cout << "Longitud del Camino mas Corto: " << n << endl;
-	}
-};
-
-int main()
-{
-	bool out=false;
-	char salir;
-
-	Programa programa; //TAD
-	Graph graph; // Grafo.
-
-	cout << "Algoritmo de Dijkstra en C++" << endl;
-
-	while (!out)
-	{
-	programa.definirGrafo(graph); //Se define cantidad de vertices y cantidad de aristas del grafo
-	programa.cargarGrafo(graph); //Se cargan las aristas del Grafo
-	programa.Dijkstra(graph); //Se aplica el algoritmo de Dijkstra
-
-	//Desea Salir?
-	cout << "Salir? (S/N)" << endl;
-	cin >> salir;
-		if (salir == 'S')
-		{
-			out = true;
-		}
-	}
+//Paso de relajacion (actualizar las distancias mínimas conocidas hacia los vértices adyacentes si se encuentra un camino más corto a través del vértice actual)
+void relajacion( int actual , int adyacente , int peso ){
+    //Si la distancia del origen al vertice actual + peso de su arista es menor a la distancia del origen al vertice adyacente
+    if( distancia[ actual ] + peso < distancia[ adyacente ] ){
+        distancia[ adyacente ] = distancia[ actual ] + peso;  //relajamos el vertice actualizando la distancia
+        previo[ adyacente ] = actual;                         //a su vez actualizamos el vertice previo
+        Q.push( Node( adyacente , distancia[ adyacente ] ) ); //agregamos adyacente a la cola de prioridad
+    }
 }
+
+//Impresion del camino mas corto desde el vertice inicial y final ingresados
+void print( int destino ){
+    if( previo[ destino ] != -1 )    //si aun poseo un vertice previo
+        print( previo[ destino ] );  //recursivamente sigo explorando
+    cout << " " << destino;        //terminada la recursion imprimo los vertices recorridos
+}
+
+void dijkstra( int inicial ){
+    init(); //inicializamos nuestros arrays
+    Q.push( Node( inicial , 0 ) ); //Insertamos el vértice inicial en la Cola de Prioridad
+    distancia[ inicial ] = 0;      //Inicializamos la distancia del inicial como 0
+    int actual , adyacente , peso;
+    while( !Q.empty() ){                   //Mientras cola no este vacia
+        actual = Q.top().first;            //Obtengo de la cola el nodo con menor peso, en un comienzo será el inicial
+        Q.pop();                           //Sacamos el elemento de la cola
+        if( visitado[ actual ] ) continue; //Si el vértice actual ya fue visitado entonces sigo sacando elementos de la cola
+        visitado[ actual ] = true;         //Marco como visitado el vértice actual
+
+        for( int i = 0 ; i < ady[ actual ].size() ; ++i ){ //reviso sus adyacentes del vertice actual
+            adyacente = ady[ actual ][ i ].first;   //id del vertice adyacente
+            peso = ady[ actual ][ i ].second;        //peso de la arista que une actual con adyacente ( actual , adyacente )
+            if( !visitado[ adyacente ] ){        //si el vertice adyacente no fue visitado
+                relajacion( actual , adyacente , peso ); //realizamos el paso de relajacion
+            }
+        }
+    }
+
+
+    cout << "Distancias mas cortas iniciando en vertice" << inicial << "\n" ;
+    for( int i = 1 ; i <= V ; ++i ){
+        cout << "Vertice " << i << ", distancia mas corta = " << distancia[ i ] << "\n";
+    }
+
+    puts("\n**************Impresion de camino mas corto**************");
+    cout << "Ingrese vertice destino: ";
+    int destino;
+    cin >> destino;
+    print(destino);
+    cout << "\n";
+}
+
+
+int main(){
+    int E , origen, destino , peso , inicial;
+    std::cin >> V >> E;
+    while( E-- ){
+        std::cin >> origen >> destino >> peso;
+        ady[ origen ].push_back( Node( destino , peso ) ); //consideremos grafo dirigido
+        ady[ destino ].push_back( Node( origen , peso ) ); //grafo no dirigido
+    }
+    cout << "Introduce el vertice inicial: ";
+    std::cin >> inicial;
+    dijkstra( inicial );
+    return 0;
+} 
