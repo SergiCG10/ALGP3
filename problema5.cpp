@@ -8,9 +8,10 @@ class unionFind{
     private:
         int* padre;
         int size;
+
     public:
 
-    UnionFind(){
+    unionFind(){
         padre = 0;
         size = 0;
     }
@@ -56,13 +57,13 @@ class unionFind{
         }
     }
 
-    ~UnionFind(){
+    ~unionFind(){
         delete [] padre;
         size = 0;
     }   
 };
 
-void Kruskal( int* V, int* A ){
+void Kruskal( unionFind V, unionFind A ){
     float precioTotal = 0; //Precio de asfaltar el conjunto de 
                            //calles seleccionadas
 }
