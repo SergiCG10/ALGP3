@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "quicksort.cpp"
+#include <vector>
 
 using namespace std;
 
@@ -70,7 +71,7 @@ class grafo{
     int numAristas;
 
     float** matrizAdyacencia;
-
+    
     void inicializar(int v){
         matrizAdyacencia = new float* [v];
         for(int i =0; i < v; i++){
@@ -84,8 +85,8 @@ class grafo{
         }
         delete matrizAdyacencia;
     }
-    public:
 
+    public:
     
     void insertarAristas(int nodo){
         
@@ -110,10 +111,18 @@ class grafo{
 
                 matrizAdyacencia[nodo][n] = valor;
                 matrizAdyacencia[n][nodo] = valor;
+
                 numAristas++;
             }
             
         }while( n != -1);
+    }
+
+    void borrarArista( int n1, int n2){
+        if(this->getArista(n1, n2).first == true){
+            matrizAdyacencia[n1][n2] =0;
+            matrizAdyacencia[n2][n1] =0;
+        }
     }
 
     grafo(){
@@ -179,6 +188,23 @@ class grafo{
         return cambio;
     }
 
+    vector<float> getTodosAristas(){
+        vector<float> conjuntoArista;
+        int filasComprobadas = 0; 
+        int aristasAdded = 0;
+
+        for( int i = 0; i < getNumVertices()&& this->getNumAristas() != aristasAdded; i++ ){
+            for(int j =filasComprobadas; j < getNumVertices() && this->getNumAristas() != aristasAdded; j++){
+                if( getArista(i,j).first == true ){
+                    conjuntoArista.push_back( getArista(i,j).second );
+                    aristasAdded++;
+                }
+            }
+        }
+
+        return conjuntoArista;
+    }
+
     void insertarNodo(float *arista){
         
         //Copiamos la matriz
@@ -210,17 +236,6 @@ class grafo{
         matrizAdyacencia = nuevaMatriz;
     }
 
-    void Kruskal(){
-        float precioTotal = 0; //Precio de asfaltar el conjunto de 
-                           //calles seleccionadas
-        unionFind S;
-        
-
-        while(0 ){
-            ;
-        }
-    }
-
     ~grafo(){
         for(int i =0; i < getNumVertices()-1; i++ ){
             delete [] matrizAdyacencia[i];
@@ -231,6 +246,31 @@ class grafo{
     }   
 };
 
+pair<bool, unionFind> Kruskal(grafo g){
+        float precioTotal = 0; //Precio de asfaltar el conjunto de 
+                               //calles seleccionadas
+        unionFind S;
+        pair<bool, unionFind> ret;
+
+        ret.first = false;
+
+        vector<float> todosAristas = g.getTodosAristas();
+        
+        S.makeSet( g.getNumVertices());
+
+        while( !todosAristas.empty() && S.getSize() != g.getNumVertices() ){
+            int n1, n2;
+            
+            if( S.findSet(n1) != S.findSet(n2) ){
+                S.Union(n1, n2);
+            }
+        }
+        if( S.getSize() == g.getNumVertices()) {
+            ret.first = true;
+        }
+
+        return ret;
+    }
 
 int main(){
     
