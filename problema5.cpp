@@ -163,7 +163,7 @@ class grafo{
                     cin >>n;
                 }
                 if( n != -1 ){
-                    borrarArista(nodo, n, 0);
+                    borrarArista(nodo, n);
                 }
                 
             }while( n != -1);
@@ -197,7 +197,7 @@ class grafo{
             inicializar(g.getNumVertices());
             for(int i =0 ; i < this->getNumVertices(); i++){
                 for(int j =0; j < this->getNumVertices(); j++){
-                    this->matrizAdyacencia[i][j] = g.getArista(i,j);
+                    this->matrizAdyacencia[i][j] = g.getArista(i,j).second;
                 }
             }
         }
@@ -210,9 +210,10 @@ class grafo{
             inicializar(g.getNumVertices());
             for(int i =0 ; i < this->getNumVertices(); i++){
                 for(int j =0; j < this->getNumVertices(); j++){
-                    this->matrizAdyacencia[i][j] = g.getArista(i,j);
+                    this->matrizAdyacencia[i][j] = g.getArista(i,j).second;
                 }
             }
+            return *this;
         }
 
 
@@ -325,7 +326,8 @@ pair<bool, unionFind> Kruskal(grafo g){
 
 int main(){
     int opcion;
-    Grafo g;
+    grafo g;
+    int vert;
     cout<<"Comenzando ejecución...."<<endl;
 
     do{
@@ -342,26 +344,31 @@ int main(){
         switch(opcion){
             case 1:
                 cout<<"¿Cuantos vertices tendrá el grafo?"<<endl;
-                int vert;
+                
                 cin>> vert;
-                g = Grafo(vert);
+                g = grafo(vert);
                 break;
             case 2:
                 g.insertarNodo();
                 break;
             case 3:
-                g.insertarAristas();
+                cout<<"A que vertice desea añadir aristas?"<<endl;
+                cin>> vert;
+                g.insertarAristas(vert);
                 break;
             case 4:
                 cout<<"De que vertice desea eliminar aristas?"<<endl;
-                int vert;
                 cin>> vert;
-                g.borrarAristas();
+                g.borrarAristas(vert);
                 break;
             case 5:
                 unionFind uf;
-                uf = g.Kruskal();
-                uf.print();
+                uf = Kruskal(g).second;
+                if( uf.first ){
+                    uf.print();
+                }else{
+                    cout<<"No hay solución para unir todos los vértices del grafo"<<endl;
+                }
                 break;
             default: 
             
