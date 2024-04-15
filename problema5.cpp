@@ -71,32 +71,68 @@ class grafo{
 
     float** matrizAdyacencia;
 
+    void inicializar(int v){
+        matrizAdyacencia = new float* [v];
+        for(int i =0; i < v; i++){
+            matrizAdyacencia[i] = new float[v];
+        }
+    }
+
+    void borrar(){
+        for(int i =0; i < getNumVertices(); i++ ){
+            delete [] matrizAdyacencia[i];
+        }
+        delete matrizAdyacencia;
+    }
     public:
+
+    
+    void insertarAristas(int nodo){
+        
+        int n;
+        do{
+            cout<<"Introduzca el vertice con el que insertar el arista con "<<nodo<<", -1 para terminar"<<endl;
+            cin >>n;
+
+            while( n < -1){
+                cout<<"Valor erróneo, ID del vertice no puede ser negativo, introduzca de nuevo:"<<endl; 
+                cin >>n;
+            }
+            if( n != -1 ){
+                float valor;
+                cout<<"Que valor desea introducir?"<<endl;  
+                cin >> valor;
+
+                while( n < -1){
+                    cout<<"Valor erróneo, -1 para vertices no conexos, valor positivo para los conexos:"<<endl; 
+                    cin >>n;
+                }
+
+                matrizAdyacencia[nodo][n] = valor;
+                matrizAdyacencia[n][nodo] = valor;
+                numAristas++;
+            }
+            
+        }while( n != -1);
+    }
 
     grafo(){
         numVertices = 0;
         numAristas = 0;
     }
     
-    grafo(int v, int a ){
+    grafo(int nVertices){
 
-        if( v < 0 || a < 0){
+        if( nVertices < 0){
             throw invalid_argument("Numero de vertices o de aristas erroneo");
         }
-        numVertices = v;
-        numAristas = a;
+        numVertices = nVertices;
+        numAristas = 0;
 
-        matrizAdyacencia = new float* [v];
-        for(int i =0; i < v; i++){
-            matrizAdyacencia[i] = new float[v];
-        }
+        inicializar(nVertices);
         
-        //CONTINUAR CON EL IMPUT DE LOS ARISTAS
-        //for(int i =0; i < v; int )
-        for(int i =0; i < v; i++){
-            for(int j =0; j< v; j++){
-                matrizAdyacencia[i][j] = 0; // 0 representará nuestro infinito
-            }
+        for(int i =0; i < nVertices; i++){
+            insertarAristas(i);
         }
         
     }
@@ -143,38 +179,8 @@ class grafo{
         return cambio;
     }
 
-    void insertarAristas(int nodo){
-        
-        int n;
-        do{
-            cout<<"Introduzca el vertice con el que insertar el arista, -1 para terminar"<<endl;
-            cin >>n;
-
-            while( n < -1){
-                cout<<"Valor erróneo, ID del vertice no puede ser negativo, introduzca de nuevo:"<<endl; 
-                cin >>n;
-            }
-            if( n != -1 ){
-                float valor;
-                cout<<"Que valor desea introducir?"<<endl;  
-                cin >> valor;
-
-                while( n < -1){
-                    cout<<"Valor erróneo, -1 para vertices no conexos, valor positivo para los conexos:"<<endl; 
-                    cin >>n;
-                }
-
-                matrizAdyacencia[nodo][n] = valor;
-                matrizAdyacencia[n][nodo] = valor;
-            }
-            
-        }while( n != -1);
-    }
     void insertarNodo(float *arista){
         
-        //Aumentamos el número de vertices
-        numVertices++;
-
         //Copiamos la matriz
         float ** nuevaMatriz = new float * [getNumVertices()];
         for( int i =0 ; i < getNumVertices() -1; i++){
@@ -194,10 +200,13 @@ class grafo{
         //Insertamos los valores de los aristas
         insertarAristas(getNumVertices()-1);
 
-        for(int i =0; i < getNumVertices()-1; i++ ){
-            delete [] matrizAdyacencia[i];
-        }
-        delete matrizAdyacencia;
+        //Liberamos memoria
+        borrar();
+
+        //Aumentamos el número de vertices
+        numVertices++;
+
+        //Sustituimos por nuestra nueva matriz
         matrizAdyacencia = nuevaMatriz;
     }
 
@@ -207,10 +216,19 @@ class grafo{
         unionFind S;
         
 
-    while(0 ){
-        ;
+        while(0 ){
+            ;
+        }
     }
-}
+
+    ~grafo(){
+        for(int i =0; i < getNumVertices()-1; i++ ){
+            delete [] matrizAdyacencia[i];
+        }
+        delete matrizAdyacencia;
+        numVertices = 0;
+        numAristas =0;
+    }   
 };
 
 
