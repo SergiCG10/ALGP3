@@ -205,7 +205,6 @@ class grafo{
         }
 
         grafo( const grafo& g){
-            cout<<"Constructor de copia"<<endl;
             this->numVertices = g.getNumVertices();
             this->numAristas = g.getNumAristas();
 
@@ -218,7 +217,7 @@ class grafo{
         }
 
         grafo operator=( const grafo& g){
-            cout<<"Operador de asignación"<<endl;
+            
             this->borrar();
             
             this->inicializar(g.getNumVertices());
@@ -373,7 +372,6 @@ int main(){
     grafo g;
     int vert;
     pair<bool, unionFind> resultado;
-    bool creado = false;
     cout<<"Comenzando ejecución...."<<endl;
     
     do{
@@ -390,8 +388,7 @@ int main(){
 
         switch(opcion){
             case 1:
-            if( !creado ){
-                //creado = true;
+            
                 cout<<"¿Cuantos vertices tendrá el grafo?"<<endl;
                 
                 cin>> vert;
@@ -401,9 +398,11 @@ int main(){
                     cin >>vert;
                 }
                 g = grafo(vert);
-            }else{
-                cout<<"Grafo ya creado, vuelva a ejecutar el programa para crear uno nuevo\n";
-            }
+                vector<float> v= g.getTodosAristas();
+                for(int i =0; i < v.size(); i++ ){
+                    cout<<v[i]<<" ";
+                }
+            
                 break;
             case 2:
                 cout<<"Insertando nodo..."<<endl<<endl;
