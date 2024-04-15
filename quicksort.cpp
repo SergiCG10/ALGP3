@@ -1,9 +1,11 @@
+#include <vector>
 using namespace std;
 
-int ordenarParte(int *v, int inicio, int fin ){
-    int pivote = v[inicio];
-	int ext_izquierdo = inicio + 1 ;
-	int ext_derecho = fin;
+template <typename T>
+T ordenarParte(vector<T>v, int inicio, int fin ){
+    T pivote = v[inicio];
+	T ext_izquierdo = inicio + 1 ;
+	T ext_derecho = fin;
 
 	while( ext_izquierdo != ext_derecho){
 		if( v[ext_izquierdo] <= pivote){
@@ -12,7 +14,7 @@ int ordenarParte(int *v, int inicio, int fin ){
 			while( (ext_derecho != ext_izquierdo) && (v[ext_derecho] > pivote) ){
 				ext_derecho--;
 			}
-			int aux = v[ext_derecho];
+			T aux = v[ext_derecho];
 			v[ext_derecho] = v[ext_izquierdo];
 			v[ext_izquierdo] = aux;
 		}
@@ -28,10 +30,12 @@ int ordenarParte(int *v, int inicio, int fin ){
 	return (ext_izquierdo);
 
 }
-void quickSort( int* v, int inicio, int fin){
+
+template <typename T>
+void quickSort( vector<T> v, int inicio, int fin){
 
 	if(inicio < fin){
-		int q = ordenarParte(v, inicio, fin);
+		T q = ordenarParte(v, inicio, fin);
 		quickSort(v, inicio, q - 1 );
 		quickSort(v, q + 1, fin);
 	}
