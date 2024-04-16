@@ -1,14 +1,13 @@
+/* 
+ * File:   main.cpp
+ * Author: emil
+ *
+ * Created on April 2, 2024, 5:55 PM
+ */
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <cstdlib>
-#include <chrono>
-#include <iostream>
-#include <fstream>
-#include <bits/stdc++.h>
-#include <algorithm>
-#include <random>
-#include <vector>
 
 struct Gasolinera {
     int distancia; // Distancia en kilómetros desde el origen
@@ -75,8 +74,6 @@ int main() {
     std::cin >> distanciaTotal;
 
     // Ordenamos las gasolineras por distancia
-    
-
     
     std::sort(gasolineras.begin(), gasolineras.end(), compararPorDistancia);
 

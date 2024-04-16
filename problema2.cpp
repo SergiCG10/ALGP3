@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<int> SolucionProblema2(vector<vector<int>>& vProblema, const int& n);
+vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n);
 void PrintVector(const vector<int>& v);
 void PrintMatriz(const vector<vector<int>>& matriz);
 
@@ -63,7 +63,6 @@ int main(int argc, char* argv []){
 		tf= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que finaliza la ejecuciÛn del algoritmo
 
     cerr << endl;
-    PrintVector(mesa);
 		unsigned long tejecucion= std::chrono::duration_cast<std::chrono::microseconds>(tf - t0).count();
 		cerr << "\tTiempo de ejec. (micros): " << tejecucion << " para tam. caso "<< n<<endl;
 		// Guardamos tam. de caso y t_ejecucion a fichero de salida
@@ -81,22 +80,25 @@ int main(int argc, char* argv []){
 	return 0;
 }
 
-vector<int> SolucionProblema2(vector<vector<int>>& vProblema, const int& n){
+
+vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n){
   vector<int> mesa(n); //O(n)
-  int nasiento = 1, inv1=0, inv2, maxconv, invele=0; //O(1)
+  vector<bool> estansentados(n, false); //O(n)
+  int nasiento = 1, inv1=0, inv2, maxconv, invelegido=0; //O(1)
   mesa[0]=0; //O(1)
   while(nasiento < n){ //O(n-1)*O(n-1) => O(n²)
-    inv1=invele; //O(1)
+    inv1=invelegido; //O(1)
     maxconv = -1; //O(1)
     for(inv2 = 1; inv2 < n; inv2++){ //O(n-1)
       if(vProblema[inv1][inv2] > maxconv
-          && vProblema[inv2][inv2]){ //O(1)
+          && !estansentados[inv2]){ //O(1)
+
         maxconv = vProblema[inv1][inv2]; //O(1)
-        invele = inv2; //O(1)
+        invelegido = inv2; //O(1)
       }
     }
-    mesa[nasiento++]=invele; //O(1)
-    vProblema[invele][invele] = 0; //O(1)
+    mesa[nasiento++]=invelegido; //O(1)
+    estansentados[invelegido] = true; //O(1)
   }
 
   return mesa;
