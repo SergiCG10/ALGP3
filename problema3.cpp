@@ -1,10 +1,3 @@
-/* 
- * File:   main.cpp
- * Author: emil
- *
- * Created on April 2, 2024, 5:55 PM
- */
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -68,33 +61,22 @@ int main() {
     std::cin >> n;
 
     std::vector<Gasolinera> gasolineras(n);
-//    for (int i = 0; i < n; ++i) {
-//        std::cout << "Ingrese la distancia de la gasolinera " << i + 1 << ": ";
-//        std::cin >> gasolineras[i].distancia;
-//        std::cout << "Ingrese la capacidad de la gasolinera " << i + 1 << ": ";
-//        std::cin >> gasolineras[i].capacidad;
-//    }
-//
-//    std::cout << "Ingrese la capacidad del tanque: ";
-//    std::cin >> k;
-//
-//    std::cout << "Ingrese la distancia total de la ruta: ";
-//    std::cin >> distanciaTotal;
+    for (int i = 0; i < n; ++i) {
+        std::cout << "Ingrese la distancia de la gasolinera " << i + 1 << ": ";
+        std::cin >> gasolineras[i].distancia;
+        std::cout << "Ingrese la capacidad de la gasolinera " << i + 1 << ": ";
+        std::cin >> gasolineras[i].capacidad;
+    }
 
-//    // Ordenamos las gasolineras por distancia
-    
-    for (int i= 0; i<n; i++){
-            gasolineras[i].distancia = rand()%100;
-    }
-        for (int i= 0; i<n; i++){
-            gasolineras[i].capacidad = rand()%100;
-    }
-    k=rand()%100;
+    std::cout << "Ingrese la capacidad del tanque: ";
+    std::cin >> k;
+
     std::cout << "Ingrese la distancia total de la ruta: ";
     std::cin >> distanciaTotal;
+
+    // Ordenamos las gasolineras por distancia
     
-    
-    
+
     
     std::sort(gasolineras.begin(), gasolineras.end(), compararPorDistancia);
 
@@ -109,3 +91,4 @@ int main() {
 
     return 0;
 }
+
