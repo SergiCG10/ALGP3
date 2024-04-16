@@ -5,30 +5,61 @@
 
 using namespace std;
 
+struct arista{
+    float cantidad;
+    int indice1;
+    int indice2;
+};
+bool operator<( const arista& A1, const arista&A2 ){
+    return A1.cantidad < A2.cantidad;
+}
+bool operator>( const arista& A1, const arista&A2 ){
+    return A1.cantidad > A2.cantidad;
+}
+bool operator==(const arista& A1, const arista&A2 ){
+    return A1.cantidad == A2.cantidad;
+}
+bool operator<=(const arista& A1, const arista&A2 ){
+    return A1 == A2 || A1 < A2;
+}
+bool operator>=(const arista& A1, const arista&A2 ){
+    return A1 == A2 || A1 > A2;
+}
+
 class unionFind{
     private:
         int* padre;
         int size;
+        int aristas;
     public:
 
     unionFind(){
         padre = 0;
         size = 0;
+        aristas =0;
     }
     
     int getSize() const{
         return size;
     }
 
+    int getAristas() const{
+        return aristas;
+    }
+
     int & getPadre(int n){
         if(n < this->getSize() && n >= 0){
             return padre[n];
+        }else{
+            throw out_of_range("Indice fuera de rango");
         }
     }
 
     const int & getPadre(int n) const{
         if(n < this->getSize() && n >= 0){
             return padre[n];
+        }else{
+            throw out_of_range("Indice fuera de rango");
         }
     }
 
@@ -37,12 +68,12 @@ class unionFind{
         padre = new int [n];
 
         for( int i = 0; i< this->getSize(); i++){
-            padre[n] = n;
+            padre[i] = i;
         }
     }
 
     int findSet(int n ){
-        int ret = n;
+        int ret =  n;
         if( n != padre[n]){
             ret = findSet(padre[n]);
         }
@@ -55,20 +86,36 @@ class unionFind{
         }else{
             padre[ findSet(y) ] = x;
         }
+        aristas++;
     }
 
-    unionFind operator = (unionFind uf){
+    unionFind operator = (const unionFind& uf){
         this->size = uf.size;
 
+        delete [] this->padre;
         this->padre = new int [this->size];
-
+                 
         for(int i = 0; i < this->size; i++){
             this->padre[i] = uf.padre[i];
         }
         return *this;
     }
-    void print(){
+    unionFind(const unionFind& uf){
+        this->size = uf.size;
+        
+        this->padre = new int [this->size];
 
+        for(int i = 0; i < this->size; i++){
+            this->padre[i] = uf.padre[i];
+        }
+    }
+    void print(){
+        cout<<endl;
+        cout<<"Estructura de relaciones del conjunto: "<<endl;
+        for(int i =0; i <this->getSize(); i++){
+            cout<< "Vértice:"<< i<<" Padre: "<<this->getPadre(i)<<endl;
+        }
+        cout<<endl;
     }
     
     ~unionFind(){
@@ -103,11 +150,11 @@ class grafo{
         }
 
         void borrarArista( int n1, int n2){
-            
-            matrizAdyacencia[n1][n2] =0;
-            matrizAdyacencia[n2][n1] =0;
-            numAristas--;
-            
+            if( getArista(n1, n2).first == true){
+                matrizAdyacencia[n1][n2] =0;
+                matrizAdyacencia[n2][n1] =0;
+                numAristas--;
+            }
         }
 
     public:
@@ -121,7 +168,7 @@ class grafo{
                 cambio = true;
                 numAristas++;
             }else{
-                cout<< "¿Desea sobreescribir el arista? s/n";
+                cout<< "\t¿Desea sobreescribir el arista? s/n\t";
                 char opcion;
                 cin>>opcion;
 
@@ -158,8 +205,6 @@ class grafo{
                         cin >>n;
                     }
                     setArista(nodo, n, valor);
-
-                    numAristas++;
                 }
                 
             }while( n != -1);
@@ -267,20 +312,28 @@ class grafo{
             return ret;
         }
 
-        vector<float> getTodosAristas(){
-            vector<float> conjuntoArista;
-            int filasComprobadas = 0; 
-            int aristasAdded = 0;
-
-            for( int i = 0; i < getNumVertices()&& this->getNumAristas() != aristasAdded; i++ ){
-                for(int j =filasComprobadas; j < getNumVertices() && this->getNumAristas() != aristasAdded; j++){
+        vector<arista> getTodosAristas(){
+            vector< arista > conjuntoArista;
+            int filasComprobadas = 1; 
+            int aristasAdded =0;
+            
+            for( int i = 0; (i < this->getNumVertices() ) && (this->getNumAristas() != aristasAdded ) ; i++ ){
+                for(int j = filasComprobadas; (j < this->getNumVertices() ) && ( this->getNumAristas() != aristasAdded ) ; j++){
+                    
                     if( getArista(i,j).first == true ){
-                        conjuntoArista.push_back( getArista(i,j).second );
+                        
+                        arista insertar;
+
+                        insertar.cantidad = getArista(i,j).second;
+                        insertar.indice1 = i;
+                        insertar.indice2 = j;
+
+                        conjuntoArista.push_back( insertar );
                         aristasAdded++;
                     }
                 }
+                filasComprobadas++;
             }
-
             return conjuntoArista;
         }
 
@@ -339,29 +392,45 @@ class grafo{
         }   
 };
 
-pair<bool, unionFind> Kruskal(grafo g){
-    pair<bool, unionFind> ret;
-    ret.first = false;
+
+struct solucion {
+    unionFind Solucion;
+    float sumatoria;
+    bool esSolucion;
+};
+solucion Kruskal(grafo g){
+    solucion ret;
+    ret.esSolucion = false;
 
     if(g.getNumVertices() > 1 ){
-        float precioTotal = 0; //Precio de asfaltar el conjunto de 
-                                //calles seleccionadas
+        float precioTotal = 0; //Precio de asfaltar el conjunto de calles seleccionadas
         unionFind S;
-       
-        vector<float> todosAristas = g.getTodosAristas();
-        quickSort(todosAristas, 0, g.getNumAristas());
-
+        arista eleccion;
+        int n1, n2;
         S.makeSet( g.getNumVertices());
 
-        while( !todosAristas.empty() && S.getSize() != g.getNumVertices() ){
-            int n1, n2;
+        vector<arista> todosAristas = g.getTodosAristas();
+        
+        //Ordenamos los aristas
+        quickSort(todosAristas, 0, todosAristas.size()-1);
+        
+        for(int i = 0; i < todosAristas.size() && S.getAristas() != g.getNumVertices()-1; i++ ){
+            
+            eleccion = todosAristas[i];
+            
+            n1 = eleccion.indice1;
+            n2 = eleccion.indice2;
             
             if( S.findSet(n1) != S.findSet(n2) ){
                 S.Union(n1, n2);
+                precioTotal += eleccion.cantidad;
             }
+            
         }
-        if( S.getSize() == g.getNumVertices()) {
-            ret.first = true;
+        if( S.getAristas() == S.getSize() -1 ) {
+            ret.esSolucion = true;
+            ret.sumatoria = precioTotal;
+            ret.Solucion = S;
         }
     }
     return ret;
@@ -371,7 +440,7 @@ int main(){
     int opcion;
     grafo g;
     int vert;
-    pair<bool, unionFind> resultado;
+    solucion resultado;
     cout<<"Comenzando ejecución...."<<endl;
     
     do{
@@ -398,11 +467,7 @@ int main(){
                     cin >>vert;
                 }
                 g = grafo(vert);
-                vector<float> v= g.getTodosAristas();
-                for(int i =0; i < v.size(); i++ ){
-                    cout<<v[i]<<" ";
-                }
-            
+                        
                 break;
             case 2:
                 cout<<"Insertando nodo..."<<endl<<endl;
@@ -435,10 +500,12 @@ int main(){
             case 5:
                 
                 resultado = Kruskal(g);
-                if( resultado.first ){
-                    resultado.second;
+                if( resultado.esSolucion ){
+                    cout<< "Se ha encontrado una solución mínima, para la que el coste total minimo asciende a: "<<resultado.sumatoria<<" euros"<<endl;
+
+                    resultado.Solucion.print();
                 }else{
-                    cout<<"No hay solución para unir todos los vértices del grafo"<<endl;
+                    cout<<"No hay solución para unir todos los vértices del grafo"<<endl<<endl;
                 }
                 break;
             case 6:

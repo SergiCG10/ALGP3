@@ -2,10 +2,11 @@
 using namespace std;
 
 template <typename T>
-T ordenarParte(vector<T>v, int inicio, int fin ){
+int ordenarParte(vector<T>& v, int inicio, int fin ){
     T pivote = v[inicio];
-	T ext_izquierdo = inicio + 1 ;
-	T ext_derecho = fin;
+
+	int ext_izquierdo = inicio + 1 ;
+	int ext_derecho = fin;
 
 	while( ext_izquierdo != ext_derecho){
 		if( v[ext_izquierdo] <= pivote){
@@ -32,10 +33,10 @@ T ordenarParte(vector<T>v, int inicio, int fin ){
 }
 
 template <typename T>
-void quickSort( vector<T> v, int inicio, int fin){
+void quickSort( vector<T>& v, int inicio, int fin){
 
 	if(inicio < fin){
-		T q = ordenarParte(v, inicio, fin);
+		int q = ordenarParte(v, inicio, fin);
 		quickSort(v, inicio, q - 1 );
 		quickSort(v, q + 1, fin);
 	}
