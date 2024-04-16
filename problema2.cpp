@@ -85,8 +85,9 @@ vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n
   vector<int> mesa(n); //O(n)
   vector<bool> estansentados(n, false); //O(n)
   int nasiento = 1, inv1=0, inv2, maxconv, invelegido=0; //O(1)
-  mesa[0]=0; //O(1)
+
   while(nasiento < n){ //O(n-1)*O(n-1) => O(n²)
+    estansentados[invelegido] = true; //O(1) Hemos sentado el 0
     inv1=invelegido; //O(1)
     maxconv = -1; //O(1)
     for(inv2 = 1; inv2 < n; inv2++){ //O(n-1)
@@ -98,7 +99,6 @@ vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n
       }
     }
     mesa[nasiento++]=invelegido; //O(1)
-    estansentados[invelegido] = true; //O(1)
   }
 
   return mesa;

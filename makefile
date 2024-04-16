@@ -2,15 +2,15 @@
 
 all:
 	#Compilando Problema 1...
-	#@g++ -o problema1.bin problema1.cpp -std=c++17 -O2
+	#@g++ -o problema1.bin problema1.cpp -std=c++17 
 	#Compilando Problema 2...
-	@g++ -o problema2.bin problema2.cpp -std=c++17 -O2
+	@g++ -o problema2.bin problema2.cpp -std=c++17 
 	#Compilando Problema 3...
-	@g++ -o problema3.bin problema3.cpp -std=c++17 -O2
+	@g++ -o problema3.bin problema3.cpp -std=c++17 
 	#Compilando Problema 4...
-	@g++ -o problema4.bin problema4.cpp -std=c++17 -O2
+	@g++ -o problema4.bin problema4.cpp -std=c++17 
 	#Compilando Problema 5...
-	@g++ -o problema5.bin problema5.cpp -std=c++17 -O2
+	@g++ -o problema5.bin problema5.cpp -std=c++17 
 
 #Elimina los ejecutables
 clean:
