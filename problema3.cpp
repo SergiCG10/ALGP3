@@ -65,7 +65,7 @@ std::vector<Gasolinera> paradasOptimas(const std::vector<Gasolinera>& gasolinera
          capacidadTanque = final.back().distancia;
          resp.push_back(gasolineras[indiceGasolinera]);
           //cout << "  D: " << resp.back().distancia << " C: " << resp.back().capacidad << endl;
-         
+         final.clear();
     }
 
     return resp;
