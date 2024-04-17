@@ -4,7 +4,7 @@
 using namespace std;
 
 
-int semilla=12345;
+
 void EncontrarParejas (vector<vector<int>> matriz, int n, vector<pair<int,int>> & parejas)
 {
     vector<vector<int>> preferencias;
@@ -62,11 +62,12 @@ const int MAX_PREF=10;
 int main(int argc, char * argv[])
 {
     //filtro de argumentos
-    if(argc!=2){
-        cout<<"Debe de haber dos argumentos: % prompt <num_estudiantes>"<<endl;
+    if(argc!=3){
+        cout<<"Debe de haber tres argumentos: % prompt <semilla> <num_estudiantes>"<<endl;
         return 0;
     }
-    int num_estudiantes=atoi(argv[1]);
+    int semilla=atoi(argv[1]);
+    int num_estudiantes=atoi(argv[2]);
     if(num_estudiantes%2!=0 || num_estudiantes<0)
     {
         cout<<"argv[1] debe ser un numero par"<<endl;
