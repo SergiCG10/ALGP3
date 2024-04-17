@@ -76,6 +76,7 @@ int main(int argc, char* argv []){
 		// Liberamos memoria del vector
     vProblema.clear();
     mesa.clear();
+    simetria = 1;
 	}
 	
 	// Cerramos fichero de salida
@@ -106,7 +107,7 @@ vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n
         invelegido = inv2; //O(1)
       }
     }
-    mesa[nasiento++]=invelegido; //O(1) Sentamos el nuevo
+    mesa[nasiento++]=invelegido; //O(1)
   }
 
   return mesa;
