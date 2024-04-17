@@ -16,13 +16,13 @@ void EncontrarParejas (vector<vector<int>> matriz, int n, vector<pair<int,int>> 
         for(int j=0;j<n;j++)
             preferencias[i][j]=matriz[i][j]*matriz[j][i];
     }
-    cout<<"Matriz de resultados"<<endl;
+    cout<<"Matriz de preferencias (i,j)*(j,i):\n"<<endl;
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++)
             cout<<preferencias[i][j]<<" ";
         cout<<endl;
     }
-
+    cout<<endl;
     vector<bool> emparejados(n, false);
     int cont_parejas=0;
     int maximo=-1;
