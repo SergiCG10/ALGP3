@@ -91,18 +91,22 @@ vector<int> SolucionProblema2(const vector<vector<int>>& vProblema, const int& n
   int nasiento = 1, inv1=0, inv2, maxconv, invelegido=0; //O(1)
 
   while(nasiento < n){ //O(n-1)*O(n-1) => O(n²)
+
     estansentados[invelegido] = true; //O(1) Hemos sentado el 0
-    inv1=invelegido; //O(1)
+    inv1=invelegido; //O(1) buscamos el invitado que más le conviene
+                     //al comensal que acabamos de sentar
     maxconv = -1; //O(1)
     for(inv2 = 1; inv2 < n; inv2++){ //O(n-1)
       if(vProblema[inv1][inv2] > maxconv
-          && !estansentados[inv2]){ //O(1)
+          && !estansentados[inv2]){ //O(1) Si el comensal que más le conviene
+                                    //no está sentado entonces establece ese 
+                                    //como máximo, y busca si hay alguno mejor
 
         maxconv = vProblema[inv1][inv2]; //O(1)
         invelegido = inv2; //O(1)
       }
     }
-    mesa[nasiento++]=invelegido; //O(1)
+    mesa[nasiento++]=invelegido; //O(1) Sentamos el nuevo
   }
 
   return mesa;
