@@ -55,7 +55,10 @@ int main(int argc, char* argv []){
         vProblema[j][i] = vProblema[i][j];
       }
     }
-		
+	
+    cerr << "Matriz de las conveniencias de los comensales: " << endl;
+    PrintMatriz(vProblema);
+
 		cerr << "Ejecutando Problema2 para tam. caso: " << n << endl;
         
 		t0= std::chrono::high_resolution_clock::now(); // Cogemos el tiempo en que comienza la ejecuciÛn del algoritmo
@@ -67,7 +70,8 @@ int main(int argc, char* argv []){
 		cerr << "\tTiempo de ejec. (micros): " << tejecucion << " para tam. caso "<< n<<endl;
 		// Guardamos tam. de caso y t_ejecucion a fichero de salida
 		fsalida<<n<<" "<<tejecucion<<"\n";
-		
+	  cerr << "En la mesa se sentarán los comensales de la siguiente manera: " << endl;
+    PrintVector(mesa);
 		
 		// Liberamos memoria del vector
     vProblema.clear();
