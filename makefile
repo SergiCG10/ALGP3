@@ -10,7 +10,7 @@ all:
 	#Compilando Problema 2...
 	@g++ -o problema2.bin problema2.cpp -std=c++17 
 	
-	#Ejecute de la siguiente manera: ./problema2.bin salida.txt 12345 10 100  
+	#Ejecute de la siguiente manera: ./problema2.bin salida.txt 12345 10 100 237
 
 	#Compilando Problema 3...
 	@g++ -o problema3.bin problema3.cpp -std=c++17 
