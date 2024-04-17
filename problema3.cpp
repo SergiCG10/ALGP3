@@ -9,7 +9,6 @@
 // *
 // * Created on April 2, 2024, 5:55 PM
 // */
-//
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -24,67 +23,50 @@
 
 using namespace std;
 
-struct Gasolinera {
-    int distancia; // Distancia en kilómetros desde el origen
-    int capacidad; // Capacidad de la gasolinera en kilómetros
-};
-
-// Función para comparar gasolineras por distancia
-bool compararPorDistancia(const Gasolinera& a, const Gasolinera& b) {
-    return a.distancia < b.distancia;
-}
-bool compararPorDistancia_(const Gasolinera& a, const Gasolinera& b) {
-    return a.distancia > b.distancia;
-}
-
 
 // Algoritmo greedy para determinar las paradas óptimas
-std::vector<Gasolinera> paradasOptimas(const std::vector<Gasolinera>& gasolineras, int capacidadTanque, int distanciaTotal) {
+std::vector<int> paradasOptimas(const std::vector<int>& gasolineras, const int capacidadTanque, int distanciaTotal) {
 
-    int distanciaRecorrida = 0;
     int indiceGasolinera = 0;
-     std::vector<Gasolinera> final;
-     std::vector<Gasolinera> resp;
-     
-   while (distanciaRecorrida <= distanciaTotal) {
+     std::vector<int> film;
+     std::vector<int> resp;
+     int parada=capacidadTanque;
+   while (parada < distanciaTotal) {
         // Buscamos la gasolinera más lejana que aún esté dentro del alcance
-        for(int i=indiceGasolinera; gasolineras[i].distancia  <=   capacidadTanque ; i++){
-            final.push_back(gasolineras[i]);
-            final.back().distancia=capacidadTanque-final.back().distancia+final.back().capacidad;
-            //cout << final.back().distancia << endl;
-            final.back().capacidad=indiceGasolinera;
+      // cout <<"M "<< parada << endl;
+        while( gasolineras[indiceGasolinera]  <=  parada && indiceGasolinera<gasolineras.size()){
+           //cout << indiceGasolinera << endl; 
+            film.push_back(gasolineras[indiceGasolinera]);
             indiceGasolinera++;
+            
         }
-         std::sort(final.begin(), final.end(),compararPorDistancia);
 //        for(int i=0; i<indiceGasolinera;i++ ){
 //            cout << "N: " <<i << "  C: " << final[i].capacidad << " D: " << final[i].distancia << endl;
 //        }
-         indiceGasolinera = final.back().capacidad;
-        // cout << indiceGasolinera << endl; 
-         distanciaRecorrida +=  final.back().distancia;
-         capacidadTanque = final.back().distancia;
-         resp.push_back(gasolineras[indiceGasolinera]);
+         std::sort(film.begin(), film.end());
+         parada=film.back()+capacidadTanque;
+         resp.push_back(film.back());
+         cout <<"Parada " <<parada << endl;
+        film.clear();
           //cout << "  D: " << resp.back().distancia << " C: " << resp.back().capacidad << endl;
-         final.clear();
+         
     }
 
     return resp;
 }
+int main(int argc, char** argv) {
 
-int main() {
-    int n; // Número de gasolineras
+   int n; // Número de gasolineras
     int k; // Capacidad del tanque en kilómetros
     int distanciaTotal; // Distancia total de la ruta
 
     std::cout << "Ingrese el número de gasolineras: ";
     std::cin >> n;
    
-    std::vector<Gasolinera> gasolineras(n);
+    std::vector<int> gasolineras(n);
     for (int i = 0; i < n; ++i) {
         std::cout << "Ingrese la distancia de la gasolinera " << i + 1 << ": ";
-        std::cin >> gasolineras[i].distancia;
-        std::cout << "Ingrese la capacidad de la gasolinera " << i + 1 << ": ";
-        std::cin >> gasolineras[i].capacidad;
+        std::cin >> gasolineras[i];
     }
 
     std::cout << "Ingrese la capacidad del tanque: ";
@@ -97,19 +79,19 @@ int main() {
     
 
     
-    std::sort(gasolineras.begin(), gasolineras.end(), compararPorDistancia);
-//    for(int i=0; i<n;i++ ){
-//        cout << "N: " <<i << "  D: " << gasolineras[i].distancia << " C: " << gasolineras[i].capacidad << endl;
-//    }
-    // Calculamos las paradas óptimas
-    std::vector<Gasolinera> final = paradasOptimas(gasolineras, k, distanciaTotal);
+    std::sort(gasolineras.begin(), gasolineras.end());
+        for(int i=0; i<n;i++ ){
+       cout << "N: " <<i << "  D: " << gasolineras[i] << endl;
+   }
+    std::vector<int> film = paradasOptimas(gasolineras, k, distanciaTotal);
 
     std::cout << "Las paradas óptimas para repostar son: " << endl;
-    for (int i=0; i<final.size();i++) {
-        cout << "  Distancia: " << final[i].distancia << " Capacidad: " << final[i].capacidad << endl;
+    for (int i=0; i<film.size();i++) {
+        cout  << film[i] << " " ;
     }
     std::cout << std::endl;
 
     return 0;
 }
+
 
