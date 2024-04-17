@@ -2,7 +2,7 @@
 
 all:
 	#Compilando Problema 1...
-	#@g++ -o problema1.bin problema1.cpp -std=c++17 
+	@g++ -o problema1.bin problema1.cpp -std=c++17 
 	#Compilando Problema 2...
 	@g++ -o problema2.bin problema2.cpp -std=c++17 
 	#Compilando Problema 3...
@@ -14,7 +14,7 @@ all:
 
 #Elimina los ejecutables
 clean:
-	#@rm problema1.bin
+	@rm problema1.bin
 	@rm problema2.bin
 	@rm problema3.bin
 	@rm problema4.bin
