@@ -33,6 +33,7 @@ EJEMPLO DE INPUT DE LAS DIAPOSITIVAS:
 1
 
 6
+
 */
 #include <stdio.h>
 #include <vector>
@@ -80,10 +81,10 @@ void relajacion( int actual , int adyacente , int peso ){
 void print( int destino ){
     if( previo[ destino ] != -1 )    //si aun poseo un vertice previo
         print( previo[ destino ] );  //recursivamente sigo explorando
-    cout << " " << destino;        //terminada la recursion imprimo los vertices recorridos
+    std::cout << " " << destino<< " ";        //terminada la recursion imprimo los vertices recorridos
 }
 
-void dijkstra( int inicial ){
+void dijkstra( int inicial, int nVertices ){
     init(); //inicializamos nuestros arrays
     Q.push( Node( inicial , 0 ) ); //Insertamos el vértice inicial en la Cola de Prioridad
     distancia[ inicial ] = 0;      //Inicializamos la distancia del inicial como 0
@@ -104,30 +105,76 @@ void dijkstra( int inicial ){
     }
 
 
-    cout << "Distancias mas cortas iniciando en vertice" << inicial << "\n" ;
+    std::cout << "Distancias mas cortas iniciando en vertice" << inicial << "\n" ;
     for( int i = 1 ; i <= V ; ++i ){
-        cout << "Vertice " << i << ", distancia mas corta = " << distancia[ i ] << "\n";
+        std::cout << "Vertice " << i << ", distancia mas corta = " << distancia[ i ] << "\n";
     }
 
     puts("\n**************Impresion de camino mas corto**************");
-    cout << "Ingrese vertice destino: ";
+    std:: cout << "Ingrese vertice destino: ";
     int destino;
-    cin >> destino;
+    std::cin >> destino;
+    while( destino < 0 || destino > V ){
+        std::cout<<"Numero de vertice no valido, vuelva a introducir uno del intervalo: [0,"<<nVertices-1<<"]\t";
+        std::cin>> destino;
+    }
     print(destino);
-    cout << "\n";
+    std::cout << "\n";
 }
 
 
 int main(){
     int E , origen, destino , peso , inicial;
-    std::cin >> V >> E;
+    
+    std::cout<<"Introduzca el numero de vertices"<<std::endl;
+    std::cin >> V;
+    while( V < 1){
+        std::cout<<"Numero de vertices incorrecto, introduzca un numero positivo mayor a 1\t";
+        std::cin>> V;
+    }
+
+    std::cout<<"Introduzca el numero de aristas"<<std::endl;
+    std::cin >> E;
+    while( E < 0){
+        std::cout<<"Numero de aristas incorrecto, introduzca un numero positivo\t";
+        std::cin>> E;
+    }
+
     while( E-- ){
-        std::cin >> origen >> destino >> peso;
+        cout<<"Introduzca el vertice de origen y el vertice de destino y el peso del arista"<<std::endl;
+        
+        //Garantizamos datos válidos
+        std::cin >> origen;
+        while( origen < 0 || origen > V ){
+            std::cout<<"Numero de vertice no valido para origen, vuelva a introducir uno del intervalo: [0,"<<V-1<<"]\t";
+            std::cin>> origen;
+        }
+
+        std::cin >> destino;
+        //Garantizamos datos válidos
+        while( destino < 0 || destino > V ){
+            std::cout<<"Numero de vertice no valido para destino, vuelva a introducir uno del intervalo: [0,"<<V-1<<"]\t";
+            std::cin>> destino;
+        }
+
+        //Garantizamos datos válidos
+        std::cin >> peso;
+        while( peso <= 0 ){
+            std::cout<<"Numero de peso no valido, vuelva a introducir uno positivo\t";
+            std::cin>> peso;
+        }
         ady[ origen ].push_back( Node( destino , peso ) ); //consideremos grafo dirigido
         ady[ destino ].push_back( Node( origen , peso ) ); //grafo no dirigido
     }
-    cout << "Introduce el vertice inicial: ";
+    std::cout << "Introduce el vertice inicial: ";
+
     std::cin >> inicial;
-    dijkstra( inicial );
+    //Garantizamos datos válidos
+    while( inicial < 0 || inicial > V ){
+        std::cout<<"Numero de vertice no valido, vuelva a introducir uno del intervalo: [0,"<<V-1<<"]\t";
+        std::cin>> inicial;
+    }
+
+    dijkstra( inicial, V );
     return 0;
 } 
