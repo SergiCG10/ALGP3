@@ -9,79 +9,101 @@
 // *
 // * Created on April 2, 2024, 5:55 PM
 // */
-#include <vector>
-#include <algorithm>
+//
 #include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
 
 // Algoritmo greedy para determinar las paradas óptimas
-std::vector<int> paradasOptimas(const std::vector<int>& gasolineras, const int capacidadTanque, int distanciaTotal) {
-
-    int indiceGasolinera = 0;
-     std::vector<int> film;
-     std::vector<int> resp;
-     int parada=capacidadTanque;
-   while (parada < distanciaTotal) {
-        // Buscamos la gasolinera más lejana que aún esté dentro del alcance
-      // cout <<"M "<< parada << endl;
-        while( gasolineras[indiceGasolinera]  <=  parada && indiceGasolinera<gasolineras.size()){
-           //cout << indiceGasolinera << endl; 
-            film.push_back(gasolineras[indiceGasolinera]);
-            indiceGasolinera++;
-            
+std::vector<int> paradasOptimas(const std::vector<float>& g, const float& capTanque, const float& dist) {
+    vector<int> resp;
+    float distanciaActual= 0;
+    
+    if( g[0]> capTanque){
+        cerr<<"Distancia entre el inicio y la primera gasolinera más grande que la capacidad del tanque, no hay solución"<<endl;
+    }
+    for(int i =0; i< g.size(); i++){
+        if(g[i+1] - g[i]> capTanque){
+            cerr<<"Error, no hay solución, distancia entre dos gasolineras contiguas más grande que la capacidad del tanque"<<endl;
         }
-//        for(int i=0; i<indiceGasolinera;i++ ){
-//            cout << "N: " <<i << "  C: " << final[i].capacidad << " D: " << final[i].distancia << endl;
-//        }
-         std::sort(film.begin(), film.end());
-         parada=film.back()+capacidadTanque;
-         resp.push_back(film.back());
-         cout <<"Parada " <<parada << endl;
-        film.clear();
-          //cout << "  D: " << resp.back().distancia << " C: " << resp.back().capacidad << endl;
-         
+    }
+    if( dist - g.back() > capTanque){
+        cerr<<"Distancia entre la ultima gasolinera y el final del trayecto más grande que la capacidad del tanque, no hay solución"<<endl;
     }
 
+    for(int i =0; i< g.size() && distanciaActual < dist; i++){
+        if( distanciaActual + capTanque < g[i+1] &&  i != g.size() ){
+            distanciaActual = g[i];
+            resp.push_back(i);
+        }else if( i == g.size()-1 ){
+            if( distanciaActual + capTanque < dist){
+                distanciaActual = g[i];
+                resp.push_back(i);
+            }
+        }
+    }
+    
+    
     return resp;
 }
-int main(int argc, char** argv) {
 
-   int n; // Número de gasolineras
-    int k; // Capacidad del tanque en kilómetros
-    int distanciaTotal; // Distancia total de la ruta
+int main() {
+    int n; // Número de gasolineras
+    float k; // Capacidad del tanque en kilómetros
+    float distanciaTotal; // Distancia total de la ruta
+    float aux;
 
-    std::cout << "Ingrese el número de gasolineras: ";
+    std::cout << "Ingrese el número de gasolineras: \n";
     std::cin >> n;
-   
-    std::vector<int> gasolineras(n);
-    for (int i = 0; i < n; ++i) {
-        std::cout << "Ingrese la distancia de la gasolinera " << i + 1 << ": ";
-        std::cin >> gasolineras[i];
+    while( n < 0){
+        std::cout << "Ingrese un número correcto de gasolineras: \n";
+        std::cin >> n;
     }
 
-    std::cout << "Ingrese la capacidad del tanque: ";
-    std::cin >> k;
+    std::vector<float> gasolineras(n);
 
-    std::cout << "Ingrese la distancia total de la ruta: ";
+    for (int i = 0; i < n; ++i) {
+        std::cout << "Ingrese el punto kilométrico de la gasolinera " << i + 1 << ": \n";
+        std::cin >> aux;
+
+        while( n < 0){
+            std::cout << "Ingrese un número correcto para el punto kilométrico: \n";
+            std::cin >> aux;
+        }
+        
+        gasolineras.push_back(aux);
+    }
+
+    std::cout << "Ingrese la distancia total de la ruta: \n";
     std::cin >> distanciaTotal;
+    while( n < 0){
+        std::cout << "Ingrese un número correcto para la distancia final del recorrido: \n";
+        std::cin >> distanciaTotal;
+    }
 
+    std::cout << "Ingrese la capacidad del tanque: \n";
+    std::cin >> k;
+    while( n < 0){
+        std::cout << "Ingrese un número correcto de capacidad: \n";
+        std::cin >> k;
+    }
+    
     // Ordenamos las gasolineras por distancia
-    
-
-    
     std::sort(gasolineras.begin(), gasolineras.end());
-        for(int i=0; i<n;i++ ){
-       cout << "N: " <<i << "  D: " << gasolineras[i] << endl;
-   }
-    std::vector<int> film = paradasOptimas(gasolineras, k, distanciaTotal);
+
+    // Calculamos las paradas óptimas
+    std::vector<int> final = paradasOptimas(gasolineras, k, distanciaTotal);
 
     std::cout << "Las paradas óptimas para repostar son: " << endl;
-    for (int i=0; i<film.size();i++) {
-        cout  << film[i] << " " ;
+    for (int i=0; i<final.size();i++) {
+        cout << "  Distancia: " << gasolineras[final[i]] << endl;
     }
     std::cout << std::endl;
 
     return 0;
 }
+
