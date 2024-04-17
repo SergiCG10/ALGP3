@@ -21,7 +21,7 @@ all:
 
 	#Compilando Problema 4...
 	@g++ -o problema4.bin problema4.cpp -std=c++17 
-
+	
 
 
 	#Compilando Problema 5...
